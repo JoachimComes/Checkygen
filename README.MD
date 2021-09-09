@@ -137,4 +137,4 @@ user@host: ./checkygen.sh
 ```
 the documentation shows a warning:
 
-![warning](/checkygen.png)
+![warning](/Checkygen.png)
