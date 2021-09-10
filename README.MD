@@ -4,6 +4,8 @@
 
 Checkygen generates tests from specifications inside the function body just like doxygen generates documentation from special comments above function definitions. At the same time checkygen reveals failed tests inside the Doxygen documentation.
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5497783.svg)](https://doi.org/10.5281/zenodo.5497783)
+
 ## 
 Test driven development is today's call. Lots of methods and working environments assist TDD. To make sure that the writing of tests is really done before coding it would be useful to puttests and code closer together. This would be possible if the functions to be tested included their test specifications.
 
