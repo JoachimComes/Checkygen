@@ -38,20 +38,21 @@ int    find_checkygennode ( checkygenlist, int, const char * );
 int  remove_checkygenlist ( checkygenlist );
 
 extern checkygenlist checkygenfl;
+extern FILE * checkygenfp;
 
 /* Checkygen macros */
 
-#define DECLARE_TEST checkygenlist checkygenfl; FILE * checkygenfp;
+#define DECLARE_TEST checkygenlist checkygenfl = NULL; FILE * checkygenfp = NULL;
 
 #ifdef CHECKYGEN
-#define CREATE_TEST checkygenfl = create_checkygenlist(); checkygenfp = fopen("Checkyfile","w"); if(checkygenfp==NULL) ERROR; fprintf(checkygenfp,"ALIASES += WRN{1}=\"\\if \\1 \\warning test \\1 failed 	\\endif\"\nENABLED_SECTIONS = ");
+#define CREATE_TEST checkygenfl = create_checkygenlist(); if(checkygenfl==NULL) return EXIT_FAILURE; checkygenfp = fopen("Checkyfile","w"); if(checkygenfp==NULL) return EXIT_FAILURE; fprintf(checkygenfp,"EXTRACT_ALL = YES\nOPTIMIZE_OUTPUT_FOR_C = YES\nALIASES += WRN{1}=\"\\if \\1 \\warning test \\1 failed 	\\endif\"\nENABLED_SECTIONS = ");
 #else
 #define CREATE_TEST checkygenfl=NULL;
 #endif
 
 #define START_TEST if(checkygenfl) {if(!find_checkygennode(checkygenfl, __LINE__, __FILE__)) { if(!push_checkygennode(checkygenfl, __LINE__, __FILE__)) ERROR; int testcounter = 0;
 
-#define TEST(a) {testcounter++; if(!(a)) {printf("\n\x1b[41m" "\t%d. test of %s failed    in file %s, line %d\x1B[0m\n",testcounter, __func__, __FILE__, __LINE__);fflush(stdout);fprintf(checkygenfp," %s%d ",__func__ ,testcounter);}else {printf("\n\x1B[44m" "\t%d. test of %s succeeded in file %s, line %d\x1b[0m\n",testcounter, __func__, __FILE__, __LINE__ );fflush(stdout);};}
+#define TEST(a) if(checkygenfl){{testcounter++; if(!(a)) {printf("\n\x1b[41m" "\t%d. test of \"%s(...)\" failed    in file %s, line %d\x1B[0m\n",testcounter, __func__, __FILE__, __LINE__);fflush(stdout);fprintf(checkygenfp," %s%d ",__func__ ,testcounter);}else {printf("\n\x1B[44m" "\t%d. test of \"%s(...)\" succeeded in file %s, line %d\x1b[0m\n",testcounter, __func__, __FILE__, __LINE__ );fflush(stdout);};};};
 
 #define STOP_TEST if(errno!=EXIT_SUCCESS) return errno;};};
 

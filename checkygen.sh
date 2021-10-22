@@ -21,7 +21,6 @@
 
 #								checkygen.sh
 
-printf "\n\n\n\t\t\t*** D O X Y G E N ***\n"
 if !(test -f Doxyfile);
 	then doxygen -g;
 fi;

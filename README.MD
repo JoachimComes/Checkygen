@@ -4,8 +4,6 @@
 
 Checkygen generates tests from specifications inside the function body just like doxygen generates documentation from special comments above function definitions. At the same time checkygen reveals failed tests inside the Doxygen documentation.
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5497783.svg)](https://doi.org/10.5281/zenodo.5497783)
-
 ## 
 Test driven development is today's call. Lots of methods and working environments assist TDD. To make sure that the writing of tests is really done before coding it would be useful to puttests and code closer together. This would be possible if the functions to be tested included their test specifications.
 
@@ -58,14 +56,14 @@ main ( int argc, char * * argv )
 /* This macro creates a test environment */
 	CREATE_TEST
 
-	int in = 0, out = 0;
-	if ( argc == 2 )
-		in = atoi ( argv[1] );
 	multiple_of_two ( in, &out ); 
 	printf ( "\n%d\n", out );
 
 /* This macro removes the test environment*/
 	REMOVE_TEST
+
+	argc = argc;
+	argv = argv;
 
 	return EXIT_SUCCESS;
 }
@@ -140,3 +138,4 @@ user@host: ./checkygen.sh
 the documentation shows a warning:
 
 ![warning](/Checkygen.png)
+

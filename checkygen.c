@@ -25,6 +25,9 @@
 #include <stdlib.h>
 #include "checkygen.h"
 
+/**
+* @brief "node" samples information about a location (line ln, file fl) of a "TEST()" and points (next) to the next node
+*/
 typedef struct node
 {
 	int ln;
@@ -32,11 +35,16 @@ typedef struct node
 	struct node * next;
 } nd;
 
+/**
+* @brief "create_checkygenlist" creates a list to documents all the places (file and line) where "TEST()" will be found
+*
+* @return head of a checkygenlist
+*/
 checkygenlist
 create_checkygenlist ( void )
 {
-	nd  * head;
-	unsigned long sz = sizeof ( nd );
+	nd  * head = NULL;
+	size_t sz = sizeof ( nd );
 	head = ( nd * ) malloc ( sz );
 	OGL ( head );
 	head->ln   = 0;
@@ -46,12 +54,21 @@ head_label:
 	return head;
 }
 
+/**
+* @brief "push_checkygenlist" inserts a node with information about a "TEST()" found in line ln and file fl into list l
+*
+* @param l
+* @param ln
+* @param fl
+*
+* @return EXIT_VALUE
+*/
 int
 push_checkygennode ( checkygenlist l, int ln, const char * fl )
 {
 	nd * head;
 	nd * entry;
-	unsigned long sz = sizeof ( char ) * ( strlen ( fl ) + 1 );
+	size_t sz = sizeof ( char ) * ( strlen ( fl ) + 1 );
 	entry = ( nd * ) malloc ( sizeof ( nd ) );
 	OGL ( entry );
 	head = l;
@@ -69,6 +86,15 @@ entry_label:
 	return 0;
 }
 
+/**
+* @brief "find_checkygennode" signals if a "TEST()" at line ln in file fl is already listed in l
+*
+* @param l
+* @param ln
+* @param fl
+*
+* @return 1: YES / 0: No
+*/
 int
 find_checkygennode ( checkygenlist l, int ln, const char * fl )
 {
@@ -85,6 +111,13 @@ find_checkygennode ( checkygenlist l, int ln, const char * fl )
 	return 0;
 }
 
+/**
+* @brief "remove_checkygenlist" deletes the list l
+*
+* @param l
+*
+* @return EXIT_VALUE
+*/
 int
 remove_checkygenlist ( checkygenlist l )
 {
@@ -93,7 +126,10 @@ remove_checkygenlist ( checkygenlist l )
 	while ( pos != NULL )
 	{
 		nd * nxt = pos->next;
-		free ( pos->fl );
+
+		if ( pos->fl != NULL )
+			free ( pos->fl );
+
 		free ( pos );
 		pos = nxt;
 	}

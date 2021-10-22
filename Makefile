@@ -21,22 +21,29 @@
 #									Makefile
 
 DEBUGFLAG = 1
-
-CFLAGS    = 
+CFLAGS    = -I./hpipm/include     -I./blasfeo/include
  
-LDFLAGS   = -lblasfeo -lhpipm -lbayesopt -lblas -lgsl -lm
-
-CC        = gcc
+LDFLAGS   = -L./hpipm/lib -lhpipm -L./blasfeo/lib -lblasfeo -lgsl -lcblas -lopenblas -lm
 
 # DO NOT EDIT BELOW THIS LINE ################################################
 
-DBG_CFLAGS  = -pedantic -Wall -W -Wmissing-prototypes -Wstrict-prototypes -Wconversion -Wshadow -Wpointer-arith
-DBG_CFLAGS += -Wcast-qual -Wcast-align -Wwrite-strings -Wnested-externs -Wmissing-declarations -Winline -fshort-enums -fno-common
-DBG_CFLAGS += -Dinline= -ggdb3 -O0 -fprofile-arcs -ftest-coverage 
-DBG_CFLAGS += -fstack-protector-strong -fprofile-arcs -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize=null -fno-sanitize=alignment 
-DBG_CFLAGS += -v -pg -g -DLONG -DDEBUG -DCHECKYGEN
+CC        = gcc
 
-DBG_LDFLAGS = -pg -g -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize=null -fno-sanitize=alignment
+#   GCC warning options for numerical programs
+#   https://www.gnu.org/software/gsl/doc/html/debug.html#gcc-warning-options-for-numerical-programs
+#   but changing "-ansi" to "-std=gnu99"
+DBG_CFLAGS  = -std=gnu99 -pedantic -Werror -Wall -W -Wmissing-prototypes -Wstrict-prototypes -Wconversion -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wnested-externs -fshort-enums -fno-common -Dinline= -g -O2
+#   gcov
+DBG_CFLAGS += -fprofile-arcs -ftest-coverage
+#   gprof
+DBG_CFLAGS += -pg
+DBG_LFLAGS  = -pg
+#   sanitizer
+DBG_CFLAGS += -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fsanitize=float-divide-by-zero -fsanitize=float-cast-overflow -fno-sanitize=null -fno-sanitize=alignment
+#   analyzer
+DBG_CFLAGS +=-fanalyzer
+#   switches
+DBG_CFLAGS += -DDEBUG -DCHECKYGEN
 
 ifeq (${DEBUGFLAG},1)
 
@@ -69,26 +76,18 @@ program: $(OBJ)
 check:
 	
 	reset
-
-	@echo "\n\n\n\t\t\t*** C P P C H E C K ***\n\n\n"
-	cppcheck -I/usr/local/include/ --enable=all ./
-	
-#	@echo "\n\n\n\t\t\t*** V A L G R I N D ***\n\n\n"
-#	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -v ./a.out
-#   sanitizer problems
-
-	@echo "\n\n\n\t\t\t*** G C O V ***\n\n\n"
-	gcov -b *.c
 	./a.out
-	
+	@echo "\n\n\n\t\t\t*** G C O V ***\n\n\n"
+	gcov -b *.c	
 	@echo "\n\n\n\t\t\t*** G P R O F ***\n\n\n"
-	gprof -b a.out gmon.out
-
+	gprof -b 
+	@echo "\n\n\n\t\t\t*** D O X O G Y E N ***\n\n\n"
 	./checkygen.sh
+
 
 clean:
 	astyle --style=allman --indent=tab --break-blocks --pad-oper --pad-comma --pad-paren --pad-header --align-pointer=middle --max-code-length=200 --break-after-logical -v $(PWD)/*.c $(PWD)/*.h
-	rm -fr a.out y.*  *.o *.d *.gcda *.gcno *.gcov core.* gmon.out lex.yy.c *.tab.* *.depend *.plist *.orig tags *.swp 	Checkyfile Doxyfile html latex  
+	rm -fr a.out y.*  *.o *.d *.gcda *.gcno *.gcov core.* gmon.out lex.yy.c *.tab.* *.depend *.plist *.orig tags *.swp *.swo Checkyfile Doxyfile html latex  
 	touch *.*
 	reset
 

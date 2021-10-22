@@ -53,10 +53,10 @@
 #include <stdlib.h>
 #include "checkygen.h"
 
-/* This macro declares the test environment */
-/** \cond */
+/**
+* @brief "DECLARE_TEST" declares a test environment
+*/
 DECLARE_TEST
-/** \endcond */
 
 int multiple_of_two ( int, int * );
 
@@ -64,19 +64,23 @@ int
 main ( int argc, char * * argv )
 {
 
-	/* This macro creates a test environment */
+	/**
+	* @brief  "CREATE_TEST" creates a test environment
+	*/
 	CREATE_TEST
 
 	int in = 0, out = 0;
 
-	if ( argc == 2 )
-		in = atoi ( argv[1] );
-
 	multiple_of_two ( in, &out );
 	printf ( "\n%d\n", out );
 
-	/* This macro removes the test environment*/
+	/**
+	* @brief "REMOVE_TEST" removes the test environment
+	*/
 	REMOVE_TEST
+
+	argc = argc;
+	argv = argv;
 
 	return EXIT_SUCCESS;
 }
@@ -112,6 +116,9 @@ multiple_of_two ( int in, int * out )
 {
 
 	/* This macro starts the function tests */
+	/**
+	* @brief "START_TEST" starts the function tests
+	*/
 	START_TEST
 
 	int m, n;
@@ -124,7 +131,11 @@ multiple_of_two ( int in, int * out )
 	/* This macro tests the function the 2. time*/
 	TEST ( multiple_of_two ( m, &n ) == EXIT_FAILURE );
 
-	/* This macro stops the function tests */
+	/**
+	* @brief "STOP_TEST" stops the function tests
+	*
+	* @return 
+	*/
 	STOP_TEST
 
 	/* !!! bad implementation to show the effect of the test !!! */
